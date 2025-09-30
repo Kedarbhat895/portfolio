@@ -278,6 +278,136 @@ function createThemeToggle() {
 // Initialize theme toggle
 // createThemeToggle(); // Uncomment if you want the theme toggle feature
 
+// Custom cursor trail effect
+const createCursorTrail = () => {
+    let particles = [];
+    const maxParticles = 15;
+
+    document.addEventListener('mousemove', (e) => {
+        particles.push({
+            x: e.clientX,
+            y: e.clientY,
+            life: 1
+        });
+
+        if (particles.length > maxParticles) {
+            particles.shift();
+        }
+
+        // Create visual particle
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.4));
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            left: ${e.clientX}px;
+            top: ${e.clientY}px;
+            transform: translate(-50%, -50%);
+            animation: cursorFade 0.6s ease-out forwards;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+        `;
+
+        document.body.appendChild(particle);
+
+        setTimeout(() => {
+            particle.remove();
+        }, 600);
+    });
+};
+
+// Add CSS animation for cursor trail
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes cursorFade {
+        0% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.3);
+        }
+    }
+
+    body {
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="rgba(102, 126, 234, 0.3)" stroke="rgba(102, 126, 234, 0.8)" stroke-width="2"/></svg>') 12 12, auto;
+    }
+
+    a, button, .btn {
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(118, 75, 162, 0.5)" stroke="rgba(118, 75, 162, 1)" stroke-width="2"/></svg>') 12 12, pointer;
+    }
+`;
+document.head.appendChild(style);
+
+createCursorTrail();
+
+// Add floating particles background
+const createFloatingParticles = () => {
+    const particlesContainer = document.createElement('div');
+    particlesContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    `;
+    document.body.insertBefore(particlesContainer, document.body.firstChild);
+
+    const particleCount = 30;
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        const size = Math.random() * 4 + 2;
+        const duration = Math.random() * 20 + 15;
+        const delay = Math.random() * 5;
+        const startX = Math.random() * 100;
+
+        particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.3));
+            border-radius: 50%;
+            left: ${startX}%;
+            bottom: -10%;
+            animation: floatUp ${duration}s ${delay}s linear infinite;
+            box-shadow: 0 0 ${size * 2}px rgba(102, 126, 234, 0.4);
+        `;
+
+        particlesContainer.appendChild(particle);
+    }
+
+    // Add particle animation
+    const particleStyle = document.createElement('style');
+    particleStyle.textContent = `
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-110vh) translateX(${Math.random() * 200 - 100}px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(particleStyle);
+};
+
+createFloatingParticles();
+
 // Add loading animation
 window.addEventListener('load', () => {
     const loader = document.querySelector('.loader');
